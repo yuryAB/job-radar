@@ -3,16 +3,17 @@
 <!-- ![JobRadar](assets/cover.png) -->
 
 # 📡 JobRadar
-### Monitor Automatizado de Vagas de Dados & BI
+### Monitor Automatizado de Vagas iOS
 
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-Scraping-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-Banco%20versionado-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-Cron-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
-![Tests](https://img.shields.io/badge/testes-73%20passing-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/testes-282%20passing-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/status-em%20produção-success?style=for-the-badge)
 
-**Autora:** Liliam Kezia Oliveira Souza
+**Base original:** Liliam Kezia Oliveira Souza
+**Configuração pessoal:** Yury Antony Barros
 
 </div>
 
@@ -20,15 +21,17 @@
 
 ## 💎 Proposta de valor
 
-> Em cidade pequena, vaga boa de Dados/BI aparece pouco e some rápido — quem checa o board duas vezes por dia perde pra quem checou na primeira hora. **JobRadar** é um sistema de monitoramento contínuo que substitui essa checagem manual: varre **8 fontes** a cada **3 horas**, filtra por cargo/cidade/mercado/idioma com três níveis de confiança, pontua cada vaga por relevância e notifica no Telegram — rodando de graça, sem servidor próprio, 24 horas por dia.
+> Vaga boa de iOS aparece e some rápido. Esta configuração usa o motor do **JobRadar** para monitorar **8 fontes** a cada **3 horas**, filtrar por stack/cargo/cidade/modalidade, pontuar cada vaga e notificar no Telegram — rodando sem servidor próprio.
+
+O perfil principal busca remoto em todo o Brasil e presencial/híbrido em **Manaus, Recife e Rio de Janeiro**. O perfil internacional é de baixa frequência e prioriza vagas remotas em mercados de língua portuguesa ou espanhola.
 
 ## 📄 Resumo executivo
 
-Entre 07 e 15 de agosto, o sistema já processou **1.052 vagas únicas**, sem intervenção manual nenhuma — mas os números também expõem os riscos reais da arquitetura atual:
+O motor original já processou **1.052 vagas únicas**, sem intervenção manual nenhuma — mas a concentração em LinkedIn continua sendo um risco operacional:
 
 | Achado | Número |
 |---|---|
-| 📊 Vagas processadas (deduplicadas) | **1.052** |
+| 📊 Vagas processadas na base original | **1.052** |
 | 🔗 Concentração numa única fonte (LinkedIn) | **89,5%** |
 | 🧪 Testes automatizados (CI a cada push) | **73** |
 | 🌎 Fontes monitoradas em paralelo | **8** |
@@ -43,7 +46,7 @@ A concentração em LinkedIn é um risco medido, não ignorado: o endpoint usado
 
 <!-- ![Notificação no Telegram](assets/screenshots/notificacao.png) -->
 
-Vaga de alta relevância chega na hora, com motivo da aprovação, nível e link. O resto do dia entra num resumo único, ranqueado — sem virar spam.
+Vaga iOS de alta relevância chega na hora, com motivo da aprovação, nível e link. O restante entra num resumo diário ranqueado — sem virar spam.
 
 ---
 
@@ -83,7 +86,8 @@ obradar/
 ├── requirements.txt
 ├── main.py ← motor único: um ciclo de busca por perfil
 ├── perfis.py ← Brasil vs Internacional (dado, não lógica duplicada)
-├── config.py / config_intl.py ← cargos, cidades, termos de busca, pesos
+├── config.py / config_intl.py ← perfil original de Dados/BI
+├── config_ios.py / config_ios_intl.py ← perfil pessoal de vagas iOS
 ├── job.py ← Job, filtro, score de relevância
 ├── relatorio_precisao.py ← aprovadas/notificadas por fonte e por semana
 ├── database/
@@ -113,7 +117,7 @@ python -m playwright install chromium
 Criar `.env` na raiz com `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` (via [@BotFather](https://t.me/BotFather)), depois:
 
 ```bash
-python main.py --perfil brasil internacional --once
+python main.py --perfil ios ios-internacional --once
 ```
 
 ## 🧪 Testes
@@ -122,7 +126,7 @@ python main.py --perfil brasil internacional --once
 pytest tests/ -v
 ```
 
-73 casos parametrizados, cobrindo a camada de filtro, o parsing de callback do Telegram e o relatório de precisão — todos rodando automaticamente a cada push via GitHub Actions.
+Os testes cobrem a camada de filtro, as regras de localização iOS, o parsing de callback do Telegram e o relatório de precisão — todos rodando automaticamente a cada push via GitHub Actions.
 
 ---
 

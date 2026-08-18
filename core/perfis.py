@@ -43,6 +43,31 @@ from core.config_intl import (
     MERCADOS_REMOTO_ACEITOS_INTL,
     IDIOMAS_EXIGIDOS_INTL,
 )
+from core.config_ios import (
+    CIDADES_IOS,
+    FERRAMENTAS_IOS_TITULO,
+    KEYWORDS_IOS,
+    KEYWORDS_IOS_CARGO_AMBIGUO,
+    KEYWORDS_IOS_CARGO_FORTE,
+    LOCATIONS_LINKEDIN_CIDADES_PRESENCIAL_IOS,
+    LOCATIONS_LINKEDIN_IOS,
+    LOCATIONS_LINKEDIN_REMOTO_APENAS_IOS,
+    MERCADOS_REMOTO_ACEITOS_IOS,
+    QUALIFICADORES_CARGO_IOS,
+    QUALIFICADORES_IOS,
+    TERMOS_BUSCA_IOS,
+    TERMOS_POR_CICLO_IOS,
+)
+from core.config_ios_intl import (
+    CIDADES_INTL as CIDADES_IOS_INTL,
+    DOMINIOS_INDEED_INTL as DOMINIOS_IOS_INTL,
+    IDIOMAS_EXIGIDOS_INTL as IDIOMAS_IOS_INTL,
+    KEYWORDS_IOS_INTL,
+    LOCATIONS_IOS_INTL,
+    MERCADOS_REMOTO_ACEITOS_INTL as MERCADOS_IOS_INTL,
+    TERMOS_BUSCA_IOS_INTL,
+    TERMOS_POR_CICLO_IOS_INTL,
+)
 from core.job import RegrasFiltro
 from scrapers.catho import CathoScraper
 from scrapers.geekhunter import GeekHunterScraper
@@ -232,7 +257,100 @@ PERFIL_INTL = Perfil(
     max_scrapers_concorrentes=3,
 )
 
+# Perfil pessoal principal: iOS no Brasil, com remoto nacional e presencial/
+# híbrido apenas em Manaus, Recife e Rio de Janeiro.
+_REGRAS_IOS = RegrasFiltro(
+    keywords_forte=KEYWORDS_IOS_CARGO_FORTE,
+    keywords_ambiguo=KEYWORDS_IOS_CARGO_AMBIGUO,
+    qualificadores_dados=QUALIFICADORES_IOS,
+    ferramentas_titulo=FERRAMENTAS_IOS_TITULO,
+    qualificadores_cargo=QUALIFICADORES_CARGO_IOS,
+    cidades=CIDADES_IOS,
+    mercados_remoto_aceitos=MERCADOS_REMOTO_ACEITOS_IOS,
+)
+
+_SCRAPERS_IOS = [
+    DefinicaoScraper(
+        GupyScraper,
+        FREQUENCIA_ALTA,
+    ),
+    DefinicaoScraper(
+        LinkedInScraper,
+        FREQUENCIA_ALTA,
+        {
+            "locations": LOCATIONS_LINKEDIN_IOS,
+            "locations_remoto_apenas": LOCATIONS_LINKEDIN_REMOTO_APENAS_IOS,
+            "locations_cidades_presencial": LOCATIONS_LINKEDIN_CIDADES_PRESENCIAL_IOS,
+        },
+    ),
+    DefinicaoScraper(SolidesScraper, FREQUENCIA_ALTA),
+    DefinicaoScraper(IndeedScraper, FREQUENCIA_ALTA),
+    DefinicaoScraper(CathoScraper, FREQUENCIA_BAIXA),
+    DefinicaoScraper(GeekHunterScraper, FREQUENCIA_BAIXA),
+    DefinicaoScraper(Jobs99Scraper, FREQUENCIA_BAIXA),
+    DefinicaoScraper(WeWorkRemotelyIntlScraper, FREQUENCIA_BAIXA),
+]
+
+PERFIL_IOS = Perfil(
+    chave="ios",
+    nome="iOS Brasil",
+    palavras_monitoradas=KEYWORDS_IOS,
+    paises_pesquisados=None,
+    regras=_REGRAS_IOS,
+    regras_eixo_secundario=None,
+    eixo_secundario_ativo=False,
+    eixo_secundario_rotulo="",
+    termos_busca=TERMOS_BUSCA_IOS,
+    termos_por_ciclo=TERMOS_POR_CICLO_IOS,
+    definicao_scrapers=_SCRAPERS_IOS,
+    max_scrapers_concorrentes=4,
+)
+
+# Perfil internacional deliberadamente em baixa frequência: roda na primeira
+# execução do dia e reaproveita o mesmo SQLite/Telegram do perfil brasileiro.
+_REGRAS_IOS_INTL = RegrasFiltro(
+    keywords_forte=KEYWORDS_IOS_INTL,
+    keywords_ambiguo=[],
+    qualificadores_dados=[],
+    ferramentas_titulo=[],
+    qualificadores_cargo=[],
+    cidades=CIDADES_IOS_INTL,
+    mercados_remoto_aceitos=MERCADOS_IOS_INTL,
+    idiomas_exigidos=IDIOMAS_IOS_INTL,
+)
+
+_SCRAPERS_IOS_INTL = [
+    DefinicaoScraper(
+        LinkedInIntlScraper,
+        FREQUENCIA_BAIXA,
+        {"locations": LOCATIONS_IOS_INTL},
+    ),
+    DefinicaoScraper(
+        IndeedIntlScraper,
+        FREQUENCIA_BAIXA,
+        {"dominios": DOMINIOS_IOS_INTL},
+    ),
+    DefinicaoScraper(WeWorkRemotelyIntlScraper, FREQUENCIA_BAIXA),
+]
+
+PERFIL_IOS_INTL = Perfil(
+    chave="ios-internacional",
+    nome="iOS Internacional",
+    palavras_monitoradas=KEYWORDS_IOS_INTL,
+    paises_pesquisados=LOCATIONS_IOS_INTL,
+    regras=_REGRAS_IOS_INTL,
+    regras_eixo_secundario=None,
+    eixo_secundario_ativo=False,
+    eixo_secundario_rotulo="",
+    termos_busca=TERMOS_BUSCA_IOS_INTL,
+    termos_por_ciclo=TERMOS_POR_CICLO_IOS_INTL,
+    definicao_scrapers=_SCRAPERS_IOS_INTL,
+    max_scrapers_concorrentes=3,
+)
+
 PERFIS = {
     PERFIL_BR.chave: PERFIL_BR,
     PERFIL_INTL.chave: PERFIL_INTL,
+    PERFIL_IOS.chave: PERFIL_IOS,
+    PERFIL_IOS_INTL.chave: PERFIL_IOS_INTL,
 }

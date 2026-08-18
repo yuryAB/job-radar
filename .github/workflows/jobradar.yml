@@ -39,6 +39,14 @@ jobs:
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium
 
+      - name: Validar credenciais do Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          test -n "$TELEGRAM_BOT_TOKEN" || (echo "Secret TELEGRAM_BOT_TOKEN não configurado." && exit 1)
+          test -n "$TELEGRAM_CHAT_ID" || (echo "Secret TELEGRAM_CHAT_ID não configurado." && exit 1)
+
       - name: Rodar JobRadar (iOS Brasil + internacional)
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

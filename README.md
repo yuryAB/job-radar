@@ -120,6 +120,16 @@ Criar `.env` na raiz com `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID` (via [@BotFat
 python main.py --perfil ios ios-internacional --once
 ```
 
+### Telegram
+
+No fork, configure em **Settings → Secrets and variables → Actions**:
+
+- `TELEGRAM_BOT_TOKEN`: token criado pelo [@BotFather](https://t.me/BotFather).
+- `TELEGRAM_CHAT_ID`: seu identificador numérico do Telegram.
+
+O workflow valida esses secrets antes de iniciar a busca. Nunca coloque o token
+no código, no `.env` commitado ou em mensagens públicas.
+
 ## 🧪 Testes
 
 ```bash
